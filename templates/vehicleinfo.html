@@ -1,0 +1,623 @@
+{% extends "basedesign.html" %}
+{% block title %}Vehicle Registration{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    .vehicle-container{
+        max-width: 1500px;
+        margin: 20px auto;
+        padding: 10px;
+    }
+    .vehicle-card{
+        display: grid;
+        grid-template-columns: repeat(2,1fr);
+    }
+    .vehicle-type,
+    .fuel-type,#state{
+        width: 100%;
+        height: 40px;
+        border-radius: 5px;
+    }
+    .colourselect {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+    }
+
+    .suboptions {
+        position: relative;
+    }
+
+    .suboptions input[type="radio"] {
+        display: none; /* hide default radio */
+    }
+
+    .suboptions label {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-block;
+        cursor: pointer;
+        border: 2px solid #ccc;
+        transition: transform 0.2s ease, border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* ===== COLORS ===== */
+    .red {
+    background-color: red;
+}
+
+.black {
+    background-color: black;
+}
+
+.white {
+    background-color: white;
+    border: 2px solid #999; /* visible on white */
+}
+
+.grey {
+    background-color: grey;
+}
+.gold {
+    background-color: #d4af37;
+}
+
+.blue {
+    background-color: #1e90ff;
+}
+
+.green {
+    background-color: #2e8b57;
+}
+
+.yellow {
+    background-color: #ffd700;
+}
+
+.orange {
+    background-color: #ff8c00;
+}
+
+.brown {
+    background-color: #8b4513;
+}
+
+.purple {
+    background-color: #800080;
+}
+
+
+
+
+    /* ===== SELECTED STATE ===== */
+    .suboptions input[type="radio"]:checked + label {
+        border: 3px solid #333;
+        transform: scale(1.1);
+        box-shadow: 0 0 6px rgba(0,0,0,0.4);
+    }
+    .other {
+    width: auto;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 20px;
+    background: #f0f0f0;
+    color: #333;
+    font-size: 14px;
+    line-height: 32px;
+    text-align: center;
+    border: 2px dashed #aaa;
+}
+.suboptions:last-child label.other {
+    
+    text-align: center;
+}
+.seating-grid {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.seat-option input[type="radio"] {
+    display: none;
+}
+
+.seat-option label {
+    min-width: 90px;
+    padding: 10px 8px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    font-size: 16px;
+    background: #f9f9f9;
+    transition: all 0.2s ease;
+}
+
+.seat-option label span {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.seat-option input[type="radio"]:checked + label {
+    border-color: #333;
+    background: #eaeaea;
+    transform: scale(1.05);
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+.boot-options {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.boot-option input[type="radio"] {
+    display: none;
+}
+
+.boot-option label {
+    min-width: 90px;
+    padding: 10px 12px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 14px;
+    background: #f9f9f9;
+    transition: all 0.2s ease;
+}
+
+.boot-option input[type="radio"]:checked + label {
+    border-color: #333;
+    background: #eaeaea;
+    transform: scale(1.05);
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+
+.boot-option label:hover {
+    background: #efefef;
+}
+.transmission-toggle {
+    display: flex;
+    gap: 10px;
+    margin-top: 6px;
+}
+
+.toggle-option {
+    position: relative;
+}
+
+.toggle-option input[type="radio"] {
+    display: none;
+}
+
+.toggle-option label {
+    padding: 6px 14px;          /* smaller size */
+    border: 2px solid #ccc;
+    border-radius: 20px;        /* pill shape */
+    font-size: 14px;
+    cursor: pointer;
+    background: #f9f9f9;
+    line-height: 1;             /* fix vertical alignment */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+/* Selected */
+.toggle-option input[type="radio"]:checked + label {
+    background: #eaeaea;
+    border-color: #333;
+    box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+/* Hover */
+.toggle-option label:hover {
+    background: #efefef;
+}
+
+.submit-wrapper {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.submit-btn {
+    width: 100%;                 /* full width */
+    padding: 12px 0;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    background: #000;            /* primary */
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    
+}
+.submit-wrapper{
+    grid-column-start: 1;
+    grid-column-end: 3;
+    grid-row-start: 7;
+    grid-row-end: 8;
+}
+/* Hover */
+.submit-btn:hover {
+    background: #333;
+}
+
+/* Click */
+.submit-btn:active {
+    transform: scale(0.98);
+}
+.vehicle-header {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    padding: 2rem 0;
+    border-radius: 0;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    border-bottom: 1px solid #e2e8f0;
+    margin: 0;
+    width: 100%;
+}
+
+.vehicle-header h2 {
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin: 0 0 0 0;
+    background: linear-gradient(135deg, #1e293b, #334155);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: fadeInDown 0.6s ease-out;
+}
+
+.vehicle-header p {
+    font-size: 1.1rem;
+    margin: 0;
+    color: #64748b;
+    font-weight: 400;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
+}
+
+@keyframes fadeInDown {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+.fuel-efficiency-options {
+    display: flex;
+    gap: 15px;
+    margin-top: 8px;
+}
+
+.fuel-option input[type="radio"] {
+    display: none;
+}
+
+.fuel-option label {
+    min-width: 80px;
+    padding: 8px 12px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    background: #f9f9f9;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.fuel-option input[type="radio"]:checked + label {
+    border-color: #333;
+    background: #eaeaea;
+    transform: scale(1.05);
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+
+.fuel-option label:hover {
+    background: #efefef;
+}
+
+
+</style>
+
+
+<div class="vehicle-container">
+<div class="vehicle-header">
+        <h2>Vehicle Registration</h2>
+        <p>Add your vehicle details</p>
+</div>
+<form method="POST" action="{{ url_for('vehicleinfo') }}" class="vehicle-card">
+
+        <div>
+            <label>Owner Name</label>
+            <input name="OwnerName" required style="text-transform: uppercase;">
+        </div>
+
+        <div>
+            <label>Vehicle Number</label>
+            <input name="VehicleNumber" required style="text-transform: uppercase;">
+        </div>
+
+        <div>
+            <label>Vehicle Name</label>
+            <input name="VehicleName" style="text-transform: uppercase;">
+        </div>
+
+        <div >
+            <label>Vehicle Type</label>
+            <select name="VehicleType" class="vehicle-type">
+                <option>--Select the Vehicle Type--</option>
+                <option>Sedan</option><option>SUV</option>
+                <option>Hatchback</option><option>Van</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Fuel Type</label>
+            <select name="FuelType" class="fuel-type">
+                <option>--Select Fuel Type --</option>
+                <option>Petrol</option><option>Diesel</option>
+                <option>Electric</option><option>Hybrid</option>
+            </select>
+        </div>
+
+
+        <div>
+            <label>Registered State / Union Territory</label>
+            <select name="Registerdstate" id="state" required>
+                <option value="">Select State / UT</option>
+
+                <!-- ================= STATES (28) ================= -->
+                <optgroup label="States">
+                    <option value="AP">Andhra Pradesh</option>
+                    <option value="AR">Arunachal Pradesh</option>
+                    <option value="AS">Assam</option>
+                    <option value="BR">Bihar</option>
+                    <option value="CT">Chhattisgarh</option>
+                    <option value="GA">Goa</option>
+                    <option value="GJ">Gujarat</option>
+
+                    <option value="HR">Haryana</option>
+                    <option value="HP">Himachal Pradesh</option>
+                    <option value="JH">Jharkhand</option>
+                    <option value="KA">Karnataka</option>
+                    <option value="KL">Kerala</option>
+                    <option value="MP">Madhya Pradesh</option>
+                    <option value="MH">Maharashtra</option>
+
+                    <option value="MN">Manipur</option>
+                    <option value="ML">Meghalaya</option>
+                    <option value="MZ">Mizoram</option>
+                    <option value="NL">Nagaland</option>
+                    <option value="OD">Odisha</option>
+                    <option value="PB">Punjab</option>
+                    <option value="RJ">Rajasthan</option>
+
+                    <option value="SK">Sikkim</option>
+                    <option value="TN">Tamil Nadu</option>
+                    <option value="TS">Telangana</option>
+                    <option value="TR">Tripura</option>
+                    <option value="UP">Uttar Pradesh</option>
+                    <option value="UK">Uttarakhand</option>
+                    <option value="WB">West Bengal</option>
+                </optgroup>
+
+                <!-- ================= UNION TERRITORIES (8) ================= -->
+                <optgroup label="Union Territories">
+                    <option value="AN">Andaman and Nicobar Islands</option>
+                    <option value="CH">Chandigarh</option>
+                    <option value="DN">Dadra and Nagar Haveli and Daman and Diu</option>
+                    <option value="DL">Delhi</option>
+
+                    <option value="JK">Jammu and Kashmir</option>
+                    <option value="LA">Ladakh</option>
+                    <option value="LD">Lakshadweep</option>
+                    <option value="PY">Puducherry</option>
+                </optgroup>
+
+            </select>
+        </div>
+
+        <div>
+    <label>Vehicle Color</label>
+    <div class="colourselect">
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="white" value="White">
+            <label for="white" class="white"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="black" value="Black">
+            <label for="black" class="black"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="grey" value="Grey">
+            <label for="grey" class="grey"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="gold" value="Gold">
+            <label for="gold" class="gold"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="blue" value="Blue">
+            <label for="blue" class="blue"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="red" value="Red">
+            <label for="red" class="red"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="brown" value="Brown">
+            <label for="brown" class="brown"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="green" value="Green">
+            <label for="green" class="green"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="yellow" value="Yellow">
+            <label for="yellow" class="yellow"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="orange" value="Orange">
+            <label for="orange" class="orange"></label>
+        </div>
+
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="purple" value="Purple">
+            <label for="purple" class="purple"></label>
+        </div>
+
+
+        <!-- OTHERS OPTION -->
+        <div class="suboptions">
+            <input type="radio" name="VehicleColor" id="other" value="Other">
+            <label for="other" class="other">➕</label>
+        </div>
+
+    </div>
+
+    <!-- Hidden input -->
+    <input type="text" name="OtherColor" id="otherColorInput"
+           placeholder="Enter vehicle color"
+           style="display:none; margin-top:8px;">
+    </div>
+
+        <div>
+            <label>Seating Capacity</label>
+
+            <div class="seating-grid">
+
+                <div class="seat-option">
+                    <input type="radio" name="SeatingCapacity" id="s3" value="3">
+                    <label for="s3">👤👤👤<br><span>3</span></label>
+                </div>
+
+                <div class="seat-option">
+                    <input type="radio" name="SeatingCapacity" id="s3_5" value="3-5">
+                    <label for="s3_5">👤👤👤👤👤<br><span>3–5</span></label>
+                </div>
+
+                <div class="seat-option">
+                    <input type="radio" name="SeatingCapacity" id="s5plus" value="5+">
+                    <label for="s5plus">👤👤👤👤👤👤<br><span>5+</span></label>
+                </div>
+
+            </div>
+        </div>
+
+        <div>
+    <label>Boot Space</label>
+
+    <div class="boot-options">
+
+        <div class="boot-option">
+            <input type="radio" id="b1" name="BootSpace" value="100-200">
+            <label for="b1">100–200 L</label>
+        </div>
+
+        <div class="boot-option">
+            <input type="radio" id="b2" name="BootSpace" value="200-400">
+            <label for="b2">200–400 L</label>
+        </div>
+
+        <div class="boot-option">
+            <input type="radio" id="b3" name="BootSpace" value="500+">
+            <label for="b3">500+ L</label>
+        </div>
+
+    </div>
+</div>
+
+
+
+        <div>
+            <label>Transmission</label>
+            <div class="transmission-toggle">
+                <div class="toggle-option"><input type="radio" id="a" name="Transmission" value="Automatic" checked><label for="a">Automatic</label></div>
+                <div class="toggle-option"><input type="radio" id="m" name="Transmission" value="Manual"><label for="m">Manual</label></div>
+            </div>
+        </div>
+        <div class="submit-wrapper">
+            <button type="submit" class="submit-btn">Add Vehicle</button>
+        </div>
+
+        <div>
+    <label>Fuel Efficiency (km/l)</label>
+    <div class="fuel-efficiency-options">
+
+        <div class="fuel-option">
+            <input type="radio" id="fe1" name="FuelEfficiency" value="10">
+            <label for="fe1">1–10</label>
+        </div>
+
+        <div class="fuel-option">
+            <input type="radio" id="fe2" name="FuelEfficiency" value="20">
+            <label for="fe2">11–20</label>
+        </div>
+
+        <div class="fuel-option">
+            <input type="radio" id="fe3" name="FuelEfficiency" value="30">
+            <label for="fe3">20+</label>
+        </div>
+
+    </div>
+</div>
+
+
+    
+
+</form>
+</div>
+
+<script>
+const radios = document.querySelectorAll('input[name="VehicleColor"]');
+const otherInput = document.getElementById("otherColorInput");
+
+radios.forEach(radio => {
+    radio.addEventListener("change", () => {
+        if (radio.value === "Other") {
+            otherInput.style.display = "block";
+            otherInput.required = true;
+        } else {
+            otherInput.style.display = "none";
+            otherInput.value = "";
+            otherInput.required = false;
+        }
+    });
+});
+</script>
+
+{% endblock %}

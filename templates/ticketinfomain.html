@@ -1,0 +1,63 @@
+
+{% extends "basedesign.html" %}
+
+{% block title %}Ticket Details{% endblock %}
+
+{% block content %}
+
+<div class="ticketdetails">
+    <div>
+        <label>UID</label>
+        <p>{{ticket.UID}}</p>
+    </div>
+    <div>
+        <label>Name</label>
+        <p>{{ticket.NAME}}</p>
+    </div>
+    <div>
+        <label>Driver Name</label>
+        <p>{{ticket.DName}}</p>
+    </div>
+     <div>
+        <label>SOURCE</label>
+        <p>{{ticket.Source}}</p>
+    </div>
+    
+    <div>
+        <label>DESTINATION</label>
+        <p>{{ticket.Destination}}</p>
+    </div>
+    <div>
+        <label>Vehicle Type</label>
+        <p>{{ticket.VehcType}}</p>
+    </div>
+   
+    
+    <div>
+        <label>Date of Journey</label>
+        <p>{{ticket.DateofJourney.strftime('%d-%b-%Y')}}</p>
+    </div>
+    <div>
+        <label>Booking Time</label>
+        <p>{{ ticket.BookingDate }}</p>
+    </div>
+    <div>
+        <label>Status</label>
+        <p>{{ticket.STATUS}}</p>
+    </div>
+    <div>
+        <label>Ticket Number</label>
+        <p>{{ticket.ticketnum}}</p>
+    </div>
+    <div>
+        <label>Payment Mode</label>
+        <p>UPI</p>
+    </div>
+    <div>
+        <label>Cost Of Journey</label>
+        <p>{{ticket.COJ}}</p>
+    </div>
+
+ </div>
+  
+{% endblock %}

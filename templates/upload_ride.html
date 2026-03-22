@@ -1,0 +1,100 @@
+{% extends "basedesign.html" %}
+
+{% block title %}Upload Ride{% endblock %}
+
+{% block content %}
+
+<style>
+    .w-100{
+        display: grid;
+        grid-template-columns: repeat(4,1fr);
+    }
+</style>
+
+
+<div class="container-fluid p-0">
+
+    
+    <div class="row g-0">
+
+        
+        <div class="col-12">
+
+           
+            <div class="bg-dark text-white py-3 px-4">
+                <h3 class="mb-0">Upload a Ride</h3>
+            </div>
+
+            
+            <div class="px-4 py-4">
+
+                <form method="POST" action="{{ url_for('add_ride') }}" class="w-100">
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Driver UID</label>
+                            <input type="text" name="uid" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Vehicle Number</label>
+                            <input type="text" name="vehicle_no" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Source</label>
+                            <input type="text" name="source" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Destination</label>
+                            <input type="text" name="destination" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label class="form-label">Date</label>
+                            <input type="date" name="ride_date" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Time</label>
+                            <input type="time" name="ride_time" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4">
+                            <label class="form-label">Available Seats</label>
+                            <input type="number" name="seats" class="form-control" min="1" required>
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label">Price per Seat (₹)</label>
+                            <input type="number" name="price" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Contact Number</label>
+                            <input type="tel" name="phone" class="form-control" required>
+                        </div>
+                    </div>
+
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            Upload Ride
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

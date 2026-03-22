@@ -1,0 +1,25 @@
+{% extends "basedesign.html" %}
+{% block content %}
+<form action="{{ url_for('ticket_status') }}" method="POST">
+    <h3>Enter Your Ticket Number</h3>
+    <div>
+        <label>Ticket Number</label>
+        <input type="text" name="ticket_no" id="number" placeholder="APXXXXXXX" value="{{ request.form.ticket_no }}">
+    </div>
+
+    <!-- CAPTCHA display -->
+    <h3 class="captcha" id="Cap">Captcha: {{ captcha }}</h3>
+    <div>
+        <label>Enter the Captcha:</label>
+        <input type="text" name="captcha" id="captcha">
+    </div>
+
+    <!-- Error message display for above the bytton -->
+    {% if error %}
+        <p class="error" style="color:red; text-align:center; margin-bottom:10px;">{{ error }}</p>
+    {% endif %}
+
+    <!-- Submit button -->
+    <button type="submit" class="Sub">Check Now</button>
+</form>
+{% endblock %}

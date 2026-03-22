@@ -1,0 +1,340 @@
+{% extends "basedesign.html" %}
+{% block title %}Driver Registration{% endblock %}
+
+{% block content %}
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; background: #f0f2f5 !important; }
+form { all: unset; display: block; width: 100%; }
+
+/* AGE ERROR */
+.age-error {
+    color: #dc3545;
+    font-size: 13px;
+    margin-top: 8px;
+    display: none;
+}
+
+.main-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+/* HEADER */
+.driheader {
+    background: linear-gradient(135deg, #212529, #495057);
+    color: white;
+    padding: 24px;
+    text-align: center;
+}
+.driheader h3 { margin: 0; font-size: 28px; }
+
+/* FORM GRID */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 40px;
+}
+
+.field {
+    background: #fafbfc;
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #e8ecef;
+    display: flex;
+    flex-direction: column;
+}
+
+/* GRID POSITIONS */
+.uid { grid-column: 1; }
+.name { grid-column: 2 / 5; }
+.age { grid-column: 1; }
+.verifn { grid-column: 2; }
+.aadhar { grid-column: 3; }
+.phone { grid-column: 4; }
+.email { grid-column: 1 / 3; }
+.district { grid-column: 3 / 5; }
+.state { grid-column: 1 / 3; }
+.expiry { grid-column: 3; }
+.photo { grid-column: 4; }
+
+.button-field {
+    grid-column: 1 / 5;
+    justify-content: center;
+    align-items: center;
+}
+
+/* BUTTONS */
+.next-btn,
+.submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px 48px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+}
+
+.next-btn {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+}
+.next-btn:disabled {
+    background: #6c757d;
+    cursor: not-allowed;
+}
+
+.submit-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    padding: 20px 60px;
+}
+
+.edit-btn {
+    background: #6c757d;
+    color: white;
+    margin-bottom: 15px;
+}
+
+/* REVIEW */
+#reviewBox {
+    padding: 40px;
+    display: none;
+}
+
+.review-header {
+    text-align: center;
+    color: #28a745;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.review-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 40px;
+}
+
+.review-info {
+    flex: 1;
+}
+
+.review-info div {
+    margin-bottom: 14px;
+    padding: 10px 14px;
+    border-left: 3px solid #28a745;
+}
+
+.review-photo {
+    width: 200px;
+    text-align: center;
+}
+
+.review-photo img {
+    width: 180px;
+    height: 220px;
+    border-radius: 12px;
+    object-fit: cover;
+    border: 4px solid #007bff;
+}
+
+/* ALREADY DRIVER */
+.review-only {
+    padding: 40px;
+}
+.review-only div {
+    margin-bottom: 14px;
+    padding: 12px 16px;
+    border-left: 4px solid #28a745;
+}
+</style>
+
+<div class="driheader">
+    <h3>Driver Registration</h3>
+</div>
+
+<div class="main-container">
+
+{% if already_driver %}
+
+<div class="review-only">
+    <h2 style="color:#28a745;">✔ You are already registered as a Driver</h2>
+
+    <div><b>Name:</b> {{ driverdb.Name }}</div>
+    <div><b>Age:</b> {{ driverdb.AGE }}</div>
+    <div><b>Email:</b> {{ driverdb.Email }}</div>
+    <div><b>Phone:</b> {{ driverdb.Phone }}</div>
+    <div><b>Address:</b> {{ driverdb.Address }}</div>
+    <div><b>State:</b> {{ driverdb.STATE }}</div>
+    <div><b>License Expiry:</b> {{ driverdb.expirydt }}</div>
+
+    {% if driverdb.photo %}
+    <div style="margin-top:20px;">
+        <img src="{{ url_for('static', filename='driver_photos/' ~ driverdb.photo) }}"
+             style="width:180px;height:220px;border-radius:12px;border:4px solid #007bff;">
+    </div>
+    {% endif %}
+
+    <a href="{{ url_for('dashboard') }}">
+        <button class="next-btn" style="margin-top:30px;">⬅ Back</button>
+    </a>
+</div>
+
+{% else %}
+
+<form method="POST" action="{{ url_for('driver_register') }}" enctype="multipart/form-data">
+
+<div class="form-grid" id="formGrid">
+
+<!-- FORM FIELDS UNCHANGED -->
+
+<div class="uid field">
+<label>UID</label>
+<input type="text" value="{{ driver.UID }}" readonly>
+<input type="hidden" name="UID" value="{{ driver.UID }}">
+</div>
+
+<div class="name field">
+<label>Driver Name</label>
+<input type="text" value="{{ driver.Name }}" readonly>
+<input type="hidden" name="Name" value="{{ driver.Name }}">
+</div>
+
+<div class="age field">
+<label>Age</label>
+<input type="number" name="AGE" min="18" max="75" oninput="validateAge(this)" required>
+<div class="age-error" id="ageError"></div>
+</div>
+
+<div class="verifn field">
+<label>Verification</label>
+<input type="text" value="Digi-Locker" readonly>
+<input type="hidden" name="VerifnType" value="Digi-Locker">
+</div>
+
+<div class="aadhar field">
+<label>Aadhaar (Last 4)</label>
+<input type="text" name="Last_4Digi" maxlength="4" pattern="[0-9]{4}" required>
+</div>
+
+<div class="phone field">
+<label>Phone</label>
+<input type="tel" value="{{ driver.Phone }}" readonly>
+<input type="hidden" name="Phone" value="{{ driver.Phone }}">
+</div>
+
+<div class="email field">
+<label>Email</label>
+<input type="email" value="{{ driver.Email }}" readonly>
+<input type="hidden" name="Email" value="{{ driver.Email }}">
+</div>
+
+<div class="district field">
+<label>District</label>
+<input type="text" value="{{ driver.District }}" readonly>
+<input type="hidden" name="Address" value="{{ driver.District }}">
+</div>
+
+<div class="state field">
+<label>State</label>
+<input type="text" value="{{ driver.State }}" readonly>
+<input type="hidden" name="STATE" value="{{ driver.State }}">
+</div>
+
+<div class="expiry field">
+<label>License Expiry</label>
+<input type="date" name="expirydt" required>
+</div>
+
+<div class="photo field">
+<label>Photo</label>
+<input type="file" name="photo" accept="image/*" onchange="previewPhoto(event)" required>
+</div>
+
+<div class="button-field field">
+<button type="button" class="next-btn" id="nextBtn" onclick="showReview()" disabled>
+Next: Review
+</button>
+</div>
+
+</div>
+
+<div id="reviewBox">
+<div class="review-header">Review & Register</div>
+
+<div class="review-container">
+<div class="review-info">
+<div><strong>Name:</strong> {{ driver.Name }}</div>
+<div><strong>Age:</strong> <span id="reviewAge"></span></div>
+<div><strong>Aadhaar:</strong> <span id="reviewAadhar"></span></div>
+<div><strong>Phone:</strong> {{ driver.Phone }}</div>
+<div><strong>License Expiry:</strong> <span id="reviewExpiry"></span></div>
+</div>
+
+<div class="review-photo">
+<img id="photoPreview">
+</div>
+</div>
+
+<div style="text-align:center; margin-top:30px;">
+<button type="button" class="next-btn edit-btn" onclick="backToForm()">Edit Form</button>
+<button type="submit" class="submit-btn">Register as Driver</button>
+</div>
+</div>
+
+</form>
+
+{% endif %}
+</div>
+
+<script>
+let ageValid = false;
+
+function validateAge(input) {
+    const age = parseInt(input.value);
+    const error = document.getElementById('ageError');
+
+    if (!age || age < 18 || age > 75) {
+        error.textContent = age < 18 ? "Age must be at least 18" : "Age cannot exceed 75";
+        error.style.display = "block";
+        ageValid = false;
+    } else {
+        error.style.display = "none";
+        ageValid = true;
+    }
+    document.getElementById('nextBtn').disabled = !ageValid;
+}
+
+function previewPhoto(e) {
+    const img = document.getElementById("photoPreview");
+    img.src = URL.createObjectURL(e.target.files[0]);
+}
+
+function showReview() {
+    document.getElementById('reviewAge').textContent =
+        document.querySelector('[name="AGE"]').value;
+    document.getElementById('reviewAadhar').textContent =
+        document.querySelector('[name="Last_4Digi"]').value;
+    document.getElementById('reviewExpiry').textContent =
+        document.querySelector('[name="expirydt"]').value;
+
+    document.getElementById('formGrid').style.display = "none";
+    document.getElementById('reviewBox').style.display = "block";
+}
+
+function backToForm() {
+    document.getElementById('reviewBox').style.display = "none";
+    document.getElementById('formGrid').style.display = "grid";
+}
+</script>
+{% endblock %}

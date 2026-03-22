@@ -1,0 +1,98 @@
+/* ===== NAVBAR ===== */
+.navbar{
+    width: 100%;
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    white-space: nowrap;
+}
+nav {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+nav a {
+    font-weight: bold;
+    font-family: 'Lucida Sans', sans-serif;
+    color: black;
+    text-decoration: none;
+}
+nav a:hover{
+    color: blue;
+}
+.welcome{
+    font-weight: bold;  
+}
+
+/* ===== SEARCH BAR ===== */
+.main{
+    display: flex;
+    max-width: 900px;
+    margin: 20px auto;
+    background-color: gainsboro;
+    height: 60px;
+    border-radius: 10px;
+    justify-content: center;
+    gap: 20px;
+    padding: 8px;
+}
+#Source,#Destination{
+    height: 90%;
+    border: 1px solid gainsboro;
+    border-radius: 7px;
+    background-color: rgb(80, 124, 13);
+    max-width: 300px;
+    width: 100%;
+    color: white;
+    font-weight: bolder;
+    padding-left: 10px;
+}
+#Source{
+    background-image: url("search.png");
+    background-size: 18px;
+}
+#Destination{
+    background-image: url("destn.png");
+    background-size: 18px;
+}
+#Source::placeholder,#Destination::placeholder{
+    color: white;
+    font-weight: bold;
+}
+#sub{
+    max-width: 150px;
+    width: 100%;
+    background-color: rgba(80, 124, 13,0.542);
+    color: white;
+    border: 1px solid gainsboro;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: bolder;
+}
+#sub:hover{
+    background-color: blue;
+}
+#date{
+    width: 90%;
+    border-radius: 7px;
+    border: 1px solid rgba(255,255,255,0.5);
+}
+
+  .ticketdetails{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            background-color: whitesmoke;
+            max-width: 90%;
+            margin: 10px auto;
+            grid-gap: 30px;
+            padding: 20px;
+            text-align: center;
+            border-radius: 10px;
+        }
+        label{
+            font-weight: bolder;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-style: oblique;
+        }
+

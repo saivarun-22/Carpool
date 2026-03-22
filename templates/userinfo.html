@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Information | Carpool</title>
+
+    <style>
+        body { background-color: #f4f6f8; font-family: Arial, sans-serif; }
+        form {
+            max-width: 700px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        h2 { grid-column: span 2; text-align: center; }
+        label { font-weight: bold; }
+        input, select { width: 100%; height: 38px; border-radius: 6px; border: 1px solid #ccc; padding-left: 10px; }
+        button { grid-column: span 2; height: 42px; background-color: #28a745; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: not-allowed; opacity: 0.6; }
+        button.enabled { cursor: pointer; opacity: 1; }
+        small { font-size: 12px; }
+    </style>
+</head>
+
+<body>
+
+<form action="/register" method="POST" id="regForm">
+
+    <h2>Complete Your Profile</h2>
+
+    <div>
+        <label>Name</label>
+        <input type="text" value="{{ user.name }}" readonly>
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input type="email" value="{{ user.email }}" readonly>
+    </div>
+
+    <div>
+        <label>Phone Number</label>
+        <input type="text" name="Phone" id="phone" maxlength="10" required>
+        <small id="phoneMsg"></small>
+    </div>
+
+    <div>
+        <label>Create UID</label>
+        <div style="position: relative;">
+            <input type="text" name="UID" id="username" maxlength="15" required>
+            <span id="userStatus" style="position:absolute;right:10px;top:8px;"></span>
+        </div>
+        <small id="userMsg"></small>
+    </div>
+
+    <div>
+        <label>State</label>
+        <select name="state" id="state" required>
+            <option value="">Select State</option>
+            <option value="AP">Andhra Pradesh</option>
+            <option value="TS">Telangana</option>
+        </select>
+    </div>
+
+    <div>
+        <label>District</label>
+        <select name="Dist" id="district" required>
+            <option value="">Select District</option>
+        </select>
+    </div>
+
+    <div>
+        <label>Pincode</label>
+        <input type="text" name="Pincode" id="pincode" maxlength="6" required>
+        <small id="pinMsg"></small>
+    </div>
+
+    <button type="submit" id="submitBtn">Register</button>
+</form>
+
+<script>
+// ---------------- STATE → DISTRICT ----------------
+const stateSel = document.getElementById("state");
+const districtSel = document.getElementById("district");
+
+const districts = {
+    "AP": ["Anakapalli","Anantapur","Chittoor","East Godavari","Eluru",
+           "Guntur","Kakinada","Krishna","Kurnool","Nandyal",
+           "Prakasam","SPS Nellore","Tirupati","Visakhapatnam","Vizianagaram","West Godavari","YSR Kadapa"],
+    "TS": ["Adilabad","Bhadradri Kothagudem","Hanumakonda","Hyderabad","Jagtial",
+           "Jangaon","Karimnagar","Khammam","Mahabubnagar","Mancherial",
+           "Medchal–Malkajgiri","Nagarkurnool","Nalgonda","Nizamabad","Peddapalli",
+           "Rangareddy","Sangareddy","Siddipet","Suryapet","Warangal"]
+};
+
+stateSel.addEventListener("change", () => {
+    districtSel.innerHTML = `<option value="">Select District</option>`;
+    if (!stateSel.value) return;
+    districts[stateSel.value].forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        districtSel.appendChild(opt);
+    });
+    toggleSubmit();
+});
+
+// ---------------- PHONE VALIDATION ----------------
+const phone = document.getElementById("phone");
+const phoneMsg = document.getElementById("phoneMsg");
+let phoneValid = false;
+
+phone.addEventListener("input", () => {
+    phone.value = phone.value.replace(/\D/g,"").slice(0,10);
+
+    if (/^[6-9]\d{9}$/.test(phone.value)) {
+        fetch(`/check-phone?phone=${phone.value}`)
+            .then(res=>res.json())
+            .then(data=>{
+                if(data.exists){
+                    phoneMsg.textContent = "Phone number already exists";
+                    phoneMsg.style.color = "red";
+                    phoneValid = false;
+                }else{
+                    phoneMsg.textContent = "Valid mobile number";
+                    phoneMsg.style.color = "green";
+                    phoneValid = true;
+                }
+                toggleSubmit();
+            }).catch(()=>{
+                phoneValid = false;
+                phoneMsg.textContent = "Error verifying phone";
+                phoneMsg.style.color = "red";
+                toggleSubmit();
+            });
+    } else {
+        phoneMsg.textContent = "Invalid Indian mobile number";
+        phoneMsg.style.color = "red";
+        phoneValid = false;
+        toggleSubmit();
+    }
+});
+
+// ---------------- USERNAME VALIDATION ----------------
+const usernameInput = document.getElementById("username");
+const userStatus = document.getElementById("userStatus");
+const userMsg = document.getElementById("userMsg");
+let usernameValid = false;
+let usernameTimer;
+
+usernameInput.addEventListener("input", () => {
+    clearTimeout(usernameTimer);
+    const value = usernameInput.value.trim();
+    if(value.length < 4){
+        userStatus.textContent = "";
+        userMsg.textContent = "";
+        usernameValid = false;
+        toggleSubmit();
+        return;
+    }
+
+    usernameTimer = setTimeout(()=>{
+        fetch(`/check-username?username=${value.toLowerCase()}`)
+            .then(res=>res.json())
+            .then(data=>{
+                if(data.exists){
+                    userStatus.textContent = "❌";
+                    userMsg.textContent = "Username already taken";
+                    userMsg.style.color = "red";
+                    usernameValid = false;
+                }else{
+                    userStatus.textContent = "✔";
+                    userMsg.textContent = "Username available";
+                    userMsg.style.color = "green";
+                    usernameValid = true;
+                }
+                toggleSubmit();
+            });
+    },500);
+});
+
+// ---------------- PINCODE VALIDATION ----------------
+const pincodeInput = document.getElementById("pincode");
+const pincodeMsg = document.getElementById("pinMsg");
+let pincodeValid = false;
+
+pincodeInput.addEventListener("input", async ()=>{
+    const pin = pincodeInput.value.trim();
+    pincodeValid = false;
+    pincodeMsg.textContent = "";
+
+    if(!/^[1-9][0-9]{5}$/.test(pin)){
+        pincodeMsg.textContent = "Invalid pincode format";
+        pincodeMsg.style.color = "red";
+        toggleSubmit();
+        return;
+    }
+
+    try{
+        const res = await fetch(`https://api.postalpincode.in/pincode/${pin}`);
+        const data = await res.json();
+        if(data[0].Status !== "Success"){
+            pincodeMsg.textContent = "Pincode does not exist";
+            pincodeMsg.style.color = "red";
+            toggleSubmit();
+            return;
+        }
+
+        const postOffice = data[0].PostOffice[0];
+        const stateFull = stateSel.value === "AP" ? "Andhra Pradesh" : "Telangana";
+        if(postOffice.State !== stateFull || postOffice.District !== districtSel.value){
+            pincodeMsg.textContent = `Pincode belongs to ${postOffice.District}, ${postOffice.State}`;
+            pincodeMsg.style.color = "red";
+            pincodeValid = false;
+        } else {
+            pincodeMsg.textContent = "Pincode verified ✔️";
+            pincodeMsg.style.color = "green";
+            pincodeValid = true;
+        }
+        toggleSubmit();
+
+    }catch(err){
+        pincodeMsg.textContent = "Error verifying pincode";
+        pincodeMsg.style.color = "red";
+        pincodeValid = false;
+        toggleSubmit();
+    }
+});
+
+// ---------------- ENABLE/DISABLE SUBMIT ----------------
+const submitBtn = document.getElementById("submitBtn");
+function toggleSubmit(){
+    if(stateSel.value && districtSel.value && phoneValid && usernameValid && pincodeValid){
+        submitBtn.disabled = false;
+        submitBtn.classList.add("enabled");
+    } else {
+        submitBtn.disabled = true;
+        submitBtn.classList.remove("enabled");
+    }
+}
+</script>
+
+</body>
+</html>

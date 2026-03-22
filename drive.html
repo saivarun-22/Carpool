@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Carpool</title>
+    <style>
+        /* ---------- Navbar Styles ---------- */
+        .navbar{
+            width: 100%;
+            background-color: antiquewhite;
+            display: flex;
+            justify-content: center;
+            border-radius: 10px;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        nav a {
+            font-weight: bold;
+            font-family: 'Lucida Sans', sans-serif;
+            color: black;
+            text-decoration: none;
+        }
+        nav a:hover{
+            color: blue;
+        }
+        .welcome{
+            font-weight: bold;
+            margin-left: auto;
+        }
+
+        /* ---------- Search Bar Styles ---------- */
+        .main{
+            display: flex;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: gainsboro;
+            height: 60px;
+            border-radius: 10px;
+            gap: 10px;
+            align-items: center;
+            padding: 10px;
+            justify-content: center;
+        }
+        #Source,#Destination{
+            height: 90%;
+            border: 1px solid gainsboro;
+            border-radius: 7px;
+            background-color: rgb(80, 124, 13);
+            max-width: 300px;
+            width: 100%;
+            color: white;
+            font-weight: bolder;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+            margin-top: 4px;
+            margin-left: 5px;
+            padding-left: 10px;
+        }
+        #Source{
+            background-image: url(../static/search.png);
+            background-size: 18px;
+        }
+        #Destination{
+            background-image: url(../static/destn.png);
+            background-size: 18px;
+        }
+        #Source::placeholder,#Destination::placeholder{
+            color: rgba(255, 255, 255, 1);
+            font-weight: bold;
+        }
+        #sub{
+            max-width: 150px;
+            width: 100%;
+            background-color: rgba(80, 124, 13,0.542);
+            color: white; 
+            border: 1px solid gainsboro;
+            border-radius: 7px; 
+            cursor: pointer; 
+            font-weight: bolder; 
+            font-size: 16px;
+            margin: 5px;
+            height: 90%;
+        }
+        #sub:hover{
+            font-size: 17px;
+            background-color:blue;  
+        }
+        #date{
+            width: 90%;
+            margin: 5px;
+            border-radius: 7px;
+            color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.542) ;
+            height: 90%;
+        }
+
+        /* ---------- Options / Icons ---------- */
+        .options{
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: whitesmoke;
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            gap: 30px;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .icons{
+            cursor: pointer;
+        }
+        .icons:hover{
+            color: blue;
+        }
+        #opt-img{
+            width: 40px;
+            height: 40px;
+        }
+
+        /* ---------- Driver Form Styles ---------- */
+        #driver-form-container{
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: whitesmoke;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        #driver-form-container form{
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            grid-gap: 20px;
+        }
+        #driver-form-container input, #driver-form-container select{
+            width: 100%;
+            height: 40px;
+            border-radius: 5px;
+        }
+        #driver-form-container .dri{ grid-column: 1 / 4; }
+        #driver-form-container .uid{ grid-column: 1 / 2; }
+        #driver-form-container h3{ grid-column: 1 / 4; text-align:center; font-style: oblique; }
+        #driver-form-container button{
+            grid-column: 1 / 4;
+            height: 40px;
+            background-color: rgb(218, 209, 209);
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #driver-form-container button:hover{
+            color:white;
+            background-color: blue;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<div class="navbar">
+    <nav>
+        <img src="{{ url_for('static', filename='logo.png') }}" height="70">
+        <a href="{{ url_for('dashboard') }}">Home</a>
+        <a href="#">Search</a>
+        <a href="#">Help</a>
+        {% if user %}
+            <span class="welcome">Welcome, {{ user.name }}</span>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+            <a href="{{ url_for('show_login') }}">Login / Signup</a>
+        {% endif %}
+    </nav>
+</div>
+
+<!-- Search Bar -->
+<div class="main">
+    <input type="text" name="Source" id="Source" placeholder="Enter Your Source Location">
+    <input type="text" name="Destination" id="Destination" placeholder="Enter Your Destination Location">
+    <input type="date" name="date" id="date">
+    <input type="submit" value="Search" id="sub">
+</div>
+
+<!-- Driver Registration Form -->
+<div id="driver-form-container">
+    <form method="POST" action="{{ url_for('driver_register') }}">
+        <h3>Driver Registration</h3>
+        <div class="uid">
+            <label>UID</label>
+            <input type="text" name="UID" id="uid" required>
+        </div>
+        <div class="dri">
+            <label>Driver Name</label>
+            <input type="text" name="Name" id="Dname" required>
+        </div>
+        <div>
+            <label>Age</label>
+            <input type="number" name="AGE" id="Dage" required>
+        </div>
+        <div>
+            <label>Verify-type</label>
+            <input type="text" name="VerifnType" id="Verify-type" value="Digi-Locker" readonly>
+        </div>
+        <div>
+            <label>Aadhaar last 4 digits</label>
+            <input type="number" name="Last_4Digi" id="d4digit" required>
+        </div>
+        <div>
+            <label>Email</label>
+            <input type="email" name="Email" id="Demail" required>
+        </div>
+        <div>
+            <label>Phone</label>
+            <input type="number" name="Phone" id="Dphone" required>
+        </div>
+        <div>
+            <label>District</label>
+            <input type="text" name="Address" id="District" required>
+        </div>
+        <div>
+            <label>State</label>
+            <select name="STATE" id="state" required>
+                <option value="">--Select The State--</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+            </select>
+        </div>
+        <div>
+            <label>Expiry-date</label>
+            <input type="date" name="expirydt" id="date" required>
+        </div>
+        <button type="submit">Register Now</button>
+    </form>
+</div>
+
+</body>
+</html>

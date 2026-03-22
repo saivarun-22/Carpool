@@ -1,0 +1,195 @@
+/* ===== PERFECTLY ALIGNED BOOKINGS PAGE ===== */
+.booking {
+    display: flex;
+    align-items: stretch; /* ✅ FIXED: Perfect vertical alignment */
+    gap: 1rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg,#f8fafc,#f1f5f9);
+    border-radius: 20px;
+    border: 1px solid rgba(99,102,241,0.1);
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+    min-height: 100px; /* ✅ FIXED: Consistent height */
+}
+
+.booking:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 60px rgba(99,102,241,0.15);
+}
+
+/* Car Image - Fixed alignment */
+.booking img { 
+    width: 80px; 
+    height: 80px; 
+    border-radius: 16px; 
+    object-fit: cover;
+    border: 3px solid #6366f1;
+    box-shadow: 0 8px 24px rgba(99,102,241,0.2);
+    flex-shrink: 0; /* ✅ FIXED: Prevent squishing */
+}
+
+/* Info Grid - Perfect alignment */
+.booking-info {
+    display: flex; /* ✅ FIXED: flex instead of grid */
+    gap: 1rem;
+    flex: 1;
+    min-width: 0; /* ✅ FIXED: Prevent overflow */
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* ✅ FIXED: Equal width */
+    justify-content: center; /* ✅ FIXED: Perfect vertical center */
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 0.125rem; /* ✅ FIXED: Tighter spacing */
+    font-weight: 600;
+    line-height: 1.1;
+}
+
+.info-value {
+    font-size: 0.95rem; /* ✅ FIXED: Slightly smaller */
+    font-weight: 600;
+    color: #1e293b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+/* Route Info - Perfect center */
+.route-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* ✅ FIXED: Center vertically */
+    gap: 0.125rem; /* ✅ FIXED: Tighter */
+    padding: 0 1rem;
+    border-left: 2px solid #e2e8f0;
+    border-right: 2px solid #e2e8f0;
+    flex-shrink: 0;
+    min-width: 140px; /* ✅ FIXED: Consistent width */
+}
+
+.route-line {
+    font-size: 0.85rem;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Right Panel - Fixed */
+.right-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* ✅ FIXED: Center vertically */
+    align-items: flex-end;
+    gap: 0.75rem;
+    min-width: 140px; /* ✅ FIXED: Consistent width */
+    flex-shrink: 0;
+}
+
+.driver-rating {
+    display: flex;
+    flex-direction: column; /* ✅ FIXED: Stack vertically */
+    align-items: flex-end;
+    gap: 0.25rem;
+    font-size: 0.85rem; /* ✅ FIXED: Smaller */
+}
+
+.stars {
+    color: #fbbf24;
+    font-size: 0.9rem;
+}
+
+/* PERFECTED FILTER - Smaller & Compact */
+.sidebar {
+    background: #fff;
+    border-radius: 20px;
+    padding: 1.5rem; /* ✅ FIXED: Smaller padding */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 2rem;
+    width: 260px; /* ✅ FIXED: Narrower */
+}
+
+.sidebar h3 {
+    font-size: 1.1rem; /* ✅ FIXED: Smaller */
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1e293b;
+}
+
+.filter-section h4 {
+    font-size: 0.9rem; /* ✅ FIXED: Smaller */
+    margin-bottom: 0.75rem; /* ✅ FIXED: Less space */
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-filter label {
+    display: flex; /* ✅ FIXED: Flex for better alignment */
+    align-items: center;
+    padding: 0.5rem 0.75rem; /* ✅ FIXED: Smaller padding */
+    margin: 0.125rem 0; /* ✅ FIXED: Tighter */
+    border-radius: 8px; /* ✅ FIXED: Smaller radius */
+    cursor: pointer;
+    transition: 0.2s;
+    font-size: 0.9rem; /* ✅ FIXED: Smaller text */
+    color: #475569;
+    line-height: 1.3;
+}
+.status-filter label:hover { 
+    background: #f1f5f9; 
+}
+.status-filter label input { 
+    margin-right: 0.5rem; 
+    accent-color: #6366f1;
+    width: 16px; /* ✅ FIXED: Smaller checkbox */
+    height: 16px;
+}
+
+/* Responsive Fixes */
+@media (max-width: 1200px) { 
+    .bookingsinfo { grid-template-columns: 1fr; } 
+    .sidebar, .adbar { order: 3; } 
+    .maincontent { order: 2; }
+    .booking-info { flex-direction: column; } /* ✅ Stack on mobile */
+}
+
+@media (max-width: 768px) {
+    .booking { 
+        flex-direction: column; 
+        text-align: center; 
+        padding: 1.25rem; /* ✅ Smaller mobile padding */
+    }
+    .route-info { 
+        border-left: none; 
+        border-right: none; 
+        border-top: 2px solid #e2e8f0; 
+        padding: 0.75rem 0 0 0; 
+        margin-top: 0.75rem;
+        flex-direction: row;
+        justify-content: center;
+        gap: 1rem;
+        min-width: auto;
+    }
+    .right-panel { 
+        flex-direction: row; 
+        justify-content: center; 
+        align-items: center; 
+        gap: 1rem;
+        min-width: auto;
+    }
+}

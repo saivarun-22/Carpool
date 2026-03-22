@@ -1,0 +1,54 @@
+{% extends "basedesign.html" %}
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+<div class="wholebox">
+    <div class="container">
+        <h3>My Bookings</h3>
+
+        {% if bookings %}
+            {% for b in bookings %}
+
+            <!-- SUMMARY BAR -->
+            <div class="booking-bar"
+                 onclick="toggleDetails('ticket{{ b.sno }}')">
+
+                <div><b>{{ b.Source }}</b> → <b>{{ b.Destination }}</b></div>
+                <div>{{ b.DateofJourney.strftime('%d %b %Y') }}</div>
+                <div>{{ b.STATUS }}</div>
+            </div>
+
+            <!-- HIDDEN FULL TICKET -->
+            <div class="booking-details" id="ticket{{ b.sno }}">
+
+                <p><b>Passenger Name:</b> {{ b.NAME }}</p>
+                <p><b>Ticket Number:</b> {{ b.ticketnum }}</p>
+                <p><b>Vehicle Type:</b> {{ b.VehcType }}</p>
+                <p><b>Driver Name:</b> {{ b.DName }}</p>
+
+                <p><b>Date of Journey:</b>
+                    {{ b.DateofJourney.strftime('%d %b %Y %I:%M %p') }}
+                </p>
+
+                <p><b>Booking Date:</b>
+                    {{ b.BookingDate.strftime('%d %b %Y %I:%M %p') }}
+                </p>
+
+                <p><b>Status:</b> {{ b.STATUS }}</p>
+
+            </div>
+
+            {% endfor %}
+        {% else %}
+            <p>No bookings found.</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleDetails(id) {
+    const el = document.getElementById(id);
+    el.style.display = (el.style.display === "block") ? "none" : "block";
+}
+</script>
+{% endblock %}

@@ -1,0 +1,202 @@
+{% extends "basedesign.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<style>
+#opt-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+/* Glass effect for top bar */
+.options-box {
+    background: rgba(255, 255, 255, 0.25) !important;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 
+        0 16px 48px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Main layout */
+.dashboard-wrapper {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.options {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+    text-align: center;
+}
+
+.icons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.2s ease;
+}
+
+.icons:hover {
+    transform: translateY(-4px);
+}
+
+.icons a, .icons span {
+    text-decoration: none;
+    color: #2c3e50;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.icons a:hover {
+    color: #3498db;
+}
+
+/* Upload box glass effect */
+.upload-box {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 30px;
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.upload-ride-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 2px dashed rgba(84, 142, 4, 0.4);
+    transition: all 0.3s ease;
+    width: 100%;
+    height: 220px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.upload-ride-card:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: translateY(-4px);
+    border-color: #2cd407;
+}
+
+.upload-icon {
+    font-size: 48px;
+    font-weight: bold;
+    color: #2cd407;
+    line-height: 1;
+}
+</style>
+
+<div class="dashboard-wrapper">
+    <!-- LEFT BOX: 8 OPTIONS -->
+    <div class="options-box">
+        <div class="options">
+            <div class="icons">
+                <img src="{{ url_for('static', filename='user.avif') }}" id="opt-img">
+                <a href="{{ url_for('driverinfo') }}">Driver Reg</a>
+            </div>
+
+            <div class="icons">
+                <img src="{{ url_for('static', filename='ticket.webp') }}" id="opt-img">
+                <a href="{{ url_for('ticket_status') }}">Ticket Status</a>
+            </div>
+
+            <div class="icons">
+                <img src="{{ url_for('static', filename='vehi.webp') }}" id="opt-img">
+                <a href="{{ url_for('vehicleinfo') }}">Add Vehicle</a>
+            </div>
+
+            <div class="icons">
+                <img src="{{ url_for('static', filename='tickets.png') }}" id="opt-img">
+                <a href="{{ url_for('mybookings') }}">My Bookings</a>
+            </div>
+
+            <div class="icons">
+                <img src="{{ url_for('static', filename='cancel.webp') }}" id="opt-img">
+                <a href="{{ url_for('cancel_ticket') }}">Cancel Ticket</a>
+            </div>
+
+            <div class="icons">
+                <img src="{{ url_for('static', filename='track.webp') }}" id="opt-img">
+                <span>Track Vehicle</span>
+            </div>
+
+            <div class="icons">
+                <img src="{{ url_for('static', filename='rate.webp') }}" id="opt-img">
+                <span>Rate Us</span>
+            </div>
+
+            <div class="icons">
+                <img src="{{ url_for('static', filename='user.avif') }}" id="opt-img">
+                <span>About Us</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT BOX: UPLOAD RIDE -->
+    <div class="upload-box" id="uploadRideWrapper" title="Register as a driver first">
+        <a href="{{ url_for('add_ride') }}" 
+           class="text-decoration-none w-100" 
+           id="uploadRideLink" 
+           style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">
+            <div class="upload-ride-card shadow-sm">
+                <div class="upload-icon">+</div>
+                <h6 class="mt-2">Upload a Ride</h6>
+            </div>
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const rideLink = document.getElementById("uploadRideLink");
+    const rideWrapper = document.getElementById("uploadRideWrapper");
+
+    fetch("/api/driver_status")
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === "yes") {
+                // Enable click
+                rideLink.style.pointerEvents = "auto";
+                rideLink.style.opacity = "1";
+                rideLink.style.cursor = "pointer";
+                rideWrapper.removeAttribute("title");
+            } else {
+                // Keep disabled
+                rideLink.style.pointerEvents = "none";
+                rideLink.style.opacity = "0.6";
+                rideLink.style.cursor = "not-allowed";
+                rideWrapper.setAttribute("title", "Register as a driver first");
+            }
+        })
+        .catch(err => {
+            rideLink.style.pointerEvents = "none";
+            rideLink.style.opacity = "0.6";
+            rideLink.style.cursor = "not-allowed";
+            rideWrapper.setAttribute("title", "Register as a driver first");
+        });
+});
+</script>
+
+{% endblock %}

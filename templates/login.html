@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Carpool Login</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f8;
+        }
+
+        form {
+            background-color: #ffffff;
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-style: oblique;
+            margin-bottom: 20px;
+        }
+
+        input, button {
+            width: 100%;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+            cursor: pointer;
+        }
+
+        .or {
+            text-align: center;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: black;
+        }
+
+        .google-btn img {
+            width: 30px;
+            margin-right: 10px;
+        }
+
+        .google-btn:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body>
+
+<form>
+    <h1>Carpool Login</h1>
+
+    <input type="email" placeholder="Email" disabled>
+    <input type="password" placeholder="Password" disabled>
+
+    <button disabled>Login</button>
+
+    <div class="or">— OR —</div>
+
+    <a class="google-btn" href="{{ url_for('login_with_google') }}">
+        <img src="{{ url_for('static', filename='Google.png') }}" alt="Google">
+        Continue with Google
+    </a>
+</form>
+
+</body>
+</html>
