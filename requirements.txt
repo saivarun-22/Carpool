@@ -1,0 +1,10 @@
+Flask
+authlib
+python-dotenv
+mysql-connector-python
+# The below are the libraries of flask and python sometimes may not be directly installed with the actual library, requires manual installation
+# 1. redirect
+# 2. os 
+# 3. random
+# 4. string 
+# 5. uuid
